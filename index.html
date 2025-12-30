@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>For Unnati 💜</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<!-- GSAP -->
+<script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+
+<style>
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 200vh; /* enables scroll gesture */
+  background: #673AB7;
+  background: -webkit-linear-gradient(to right, #512DA8, #673AB7);
+  background: linear-gradient(to right, #512DA8, #673AB7);
+  font-family: 'Playfair Display', serif;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  color: #3a235e;
+}
+
+/* ===================== */
+/* ⬆️ Scroll Hint */
+/* ===================== */
+.scroll-hint {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.95rem;
+  color: #fff;
+  opacity: 0.9;
+  letter-spacing: 0.08em;
+  animation: float 2s infinite ease-in-out;
+  z-index: 5;
+}
+
+@keyframes float {
+  0%,100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -8px); }
+}
+
+/* ===================== */
+/* ❤️ Loader */
+/* ===================== */
+.loader {
+  position: fixed;
+  inset: 0;
+  background: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.cssload-main * { font-size: 62px; }
+
+.cssload-heart {
+  animation: spin 2.8s infinite ease-in-out;
+  position: relative;
+}
+
+.cssload-heartL,
+.cssload-heartR {
+  width: 1em;
+  height: 1em;
+  background: rgb(252,0,101);
+  border-radius: 50%;
+  position: absolute;
+}
+
+.cssload-heartL { transform: translate(-28px,-27px); }
+.cssload-heartR { transform: translate(28px,-27px); }
+
+.cssload-square {
+  width: 1em;
+  height: 1em;
+  background: rgb(252,0,101);
+  transform: rotate(-45deg);
+}
+
+@keyframes spin {
+  100% { transform: rotate(720deg); }
+}
+
+/* ===================== */
+/* ✉️ Envelope */
+/* ===================== */
+.envelope {
+  width: 100%;
+  max-width: 900px;
+  perspective: 1600px;
+  margin-top: 140px;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.envelope-flap {
+  height: 180px;
+  background: linear-gradient(#e5d4ff, #ccb4ff);
+  border-radius: 18px 18px 0 0;
+  transform-origin: top;
+}
+
+.envelope-body {
+  background: #fdf8ff;
+  border-radius: 0 0 18px 18px;
+  padding: 40px;
+  box-shadow: 0 40px 120px rgba(0,0,0,.35);
+}
+
+/* ===================== */
+/* 📜 Letter */
+/* ===================== */
+.letter {
+  background: #fff;
+  padding: clamp(24px, 6vw, 70px);
+  border-radius: 14px;
+  transform: translateY(-50px) scale(0.95);
+  opacity: 0;
+}
+
+.letter-title {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(2.8rem, 8vw, 4.2rem);
+  text-align: center;
+  color: #7b3fe4;
+  margin-bottom: 30px;
+}
+
+/* ===================== */
+/* ❤️ Heart Scene */
+/* ===================== */
+.heart-stage {
+  display: none;
+  position: relative;
+  height: 240px;
+  text-align: center;
+}
+
+.flying-heart {
+  font-size: 3.5rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.heart-text {
+  margin-top: 150px;
+  opacity: 0;
+  color: #5b2d8b;
+}
+
+/* ===================== */
+/* ✍️ Letter Content */
+/* ===================== */
+.line {
+  font-size: clamp(1rem, 3vw, 1.15rem);
+  line-height: 2;
+  margin-bottom: 16px;
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.highlight {
+  color: #7b3fe4;
+  font-style: italic;
+}
+
+.end {
+  margin-top: 50px;
+  text-align: center;
+  font-size: 1.3rem;
+  color: #7b3fe4;
+  opacity: 0;
+}
+
+/* 🎵 */
+audio { display: none; }
+</style>
+</head>
+
+<body>
+
+<div class="scroll-hint" id="scrollHint">⬆ Scroll up to open</div>
+
+<!-- ❤️ Loader -->
+<div class="loader" id="loader">
+  <div class="cssload-main">
+    <div class="cssload-heart">
+      <span class="cssload-heartL"></span>
+      <span class="cssload-heartR"></span>
+      <span class="cssload-square"></span>
+    </div>
+  </div>
+</div>
+
+<!-- 🎵 Music -->
+<audio id="bgMusic" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2c3b1a01c7.mp3">
+</audio>
+
+<!-- ✉️ Envelope -->
+<div class="envelope" id="envelope">
+  <div class="envelope-flap" id="flap"></div>
+  <div class="envelope-body">
+    <div class="letter" id="letter">
+
+      <div class="letter-title">Unnati 💜</div>
+
+      <!-- ❤️ Heart Interaction -->
+      <div class="heart-stage" id="heartStage">
+        <div class="flying-heart" id="heart">💜</div>
+        <div class="heart-text" id="heartText">
+          This is my heart… catch me 🫀
+        </div>
+      </div>
+
+      <!-- 📜 Letter Content -->
+      <div class="content">
+        <div class="line">This isn’t just a letter.</div>
+        <div class="line">It’s my heart finally learning how to speak.</div>
+         <div class="line">This isn’t just a letter.</div>
+        <div class="line">It’s my heart finally learning how to speak.</div>
+
+        <div class="line">Jab tum muskurati ho,</div>
+        <div class="line ">meri duniya apni awaaz kho deti hai.</div>
+        <div class="line highlight">U make me feel complete .</div>
+        <div class="line">Tumhari smile soft hai, par uska asar gehra.</div>
+        <div class="line">Tumhari walk mein ek sukoon hai,</div>
+        <div class="line">jaise har raasta tumhe pehchaanta ho.</div>
+        <div class="line highlight">Never have I ever felt so loved.</div>
+        <div class="line highlight">Never will I ever felt so loved.</div>
+        <div class="line">The way you talk — dheere, sachche lafzon mein,</div>
+        <div class="line highlight"> Aise pyaar bina bole reh jaata hai.</div>
+
+        <div class="line highlight">Tum mera khayal rakh leti ho bina bole,</div>
+        <div class="line">aur mujhe tab samajh aata hai,</div>
+        <div class="line "> pyaar awaaz nahi, aadat hota hai.</div>
+
+        <div class="line">Main tumhare saath rehna chahta hoon,</div>
+        <div class="line">sirf khushi mein nahi.</div>
+
+        <div class="line">Jab tum strong ho, main proud hoon.</div>
+        <div class="line">Aur jab tum thak jaati ho,</div>
+        <div class="line"> main tumhara sahaara banna chahta hoon.</div>
+
+        <div class="line">Aur phir woh chhoti cheezein…</div>
+        <div class="line">Subah uthte hi tumhara message.</div>
+        <div class="line">Kabhi call, kabhi mazaak,</div>
+        <div class="line highlight">I cant express everything but aur bina jaane meri poori din bana dena.</div>
+
+        <div class="line">Agar pyaar ek kagaz hota,</div>
+        <div class="line">toh main har din tum par likhta.</div>
+        <div class="line highlight">Unnati, this letter is yours.</div>
+        <div class="end">
+          💜 I love you. Thank you for being in my life. 💜
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const loader = document.getElementById("loader");
+const envelope = document.getElementById("envelope");
+const flap = document.getElementById("flap");
+const letter = document.getElementById("letter");
+const scrollHint = document.getElementById("scrollHint");
+const heartStage = document.getElementById("heartStage");
+const heart = document.getElementById("heart");
+const heartText = document.getElementById("heartText");
+const lines = document.querySelectorAll(".line");
+const music = document.getElementById("bgMusic");
+
+let opened = false;
+
+/* Loader → Envelope */
+window.onload = () => {
+  gsap.to(loader, {
+    opacity: 0,
+    duration: 1,
+    delay: 2,
+    onComplete: () => loader.remove()
+  });
+  gsap.to(envelope, { opacity: 1, delay: 2.3 });
+};
+
+/* Open on scroll or click */
+window.addEventListener("wheel", openEnvelope, { once: true });
+envelope.addEventListener("click", openEnvelope);
+
+function openEnvelope() {
+  if (opened) return;
+  opened = true;
+  scrollHint.style.display = "none";
+
+  music.volume = 0;
+  music.play().catch(()=>{});
+  gsap.to(music, { volume: 0.35, duration: 4 });
+
+  gsap.to(flap, { rotateX: -120, duration: 1.6, ease: "power4.inOut" });
+  gsap.to(letter, {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    delay: 0.6,
+    duration: 1.4,
+    ease: "power3.out",
+    onComplete: startHeart
+  });
+}
+
+/* Heart scene */
+function startHeart() {
+  heartStage.style.display = "block";
+  gsap.fromTo(heart, { y: -120 }, { y: 40, duration: 1.4, ease: "bounce.out" });
+  gsap.to(heartText, { opacity: 1, delay: 0.8 });
+
+  gsap.to(heart, {
+    x: () => Math.random() * 160 - 80,
+    y: () => Math.random() * 60,
+    duration: 1.2,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut"
+  });
+}
+
+heart.addEventListener("click", () => {
+  gsap.killTweensOf(heart);
+  heartText.innerText = "Okay… I’m yours. Have me 💜";
+
+  gsap.to(heart, {
+    scale: 0.5,
+    y: 120,
+    duration: 1,
+    ease: "power3.inOut",
+    onComplete: revealLetter
+  });
+});
+
+/* Reveal letter text */
+function revealLetter() {
+  heartStage.style.display = "none";
+
+  gsap.to(lines, {
+    opacity: 1,
+    y: 0,
+    stagger: 0.22,
+    duration: 0.8,
+    ease: "power3.out"
+  });
+
+  gsap.to(".end", {
+    opacity: 1,
+    delay: lines.length * 0.22 + 0.5
+  });
+}
+</script>
+
+</body>
+</html>
